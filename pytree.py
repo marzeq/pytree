@@ -22,6 +22,7 @@ def colorof(name: str, isdir: bool) -> str:
         for pat, col in COLORS.items():
             if fnmatch.fnmatch(name, pat):
                 return col
+        return ""
 
 
 def printnode(depth: int, name: str, isdir: bool):
