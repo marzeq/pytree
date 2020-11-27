@@ -10,7 +10,12 @@ COLORS = {pat: "=".join(col) for pat, *col in map(lambda s: s.split("="), COLORS
 
 
 if len(argv) >= 2:
-    os.chdir(argv[1])
+    if argv[1] == "--no-color" and len(argv) >= 3:
+        os.chdir(argv[2])
+
+color = True
+if "--no-color" in argv:
+    color = False
 
 dirlist = os.listdir()
 
@@ -25,23 +30,27 @@ def colorof(name: str, isdir: bool) -> str:
         return ""
 
 
-def printnode(depth: int, name: str, isdir: bool):
+def printnode(depth: int, name: str, isdir: bool, color: bool):
     name_colored = f"\x1b[{colorof(name, isdir)}m{name}{'/' if isdir else ''}\x1b[m"
-    print("   "*depth + name_colored)
+    if color:
+        print("   "*depth + name_colored)
+    else:
+        print(f"{'   '*depth}{name}{'/' if isdir else ''}")
 
 
 def process(path: str):
     pathl = path.split("/")
     if os.path.isdir(path):
-        printnode(len(pathl) - 1, pathl[-1], True)
+        printnode(len(pathl) - 1, pathl[-1], True, color)
         try:
             for pos in os.listdir(path):
                 process(path + "/" + pos)
         except PermissionError:
             print("   "*len(pathl) + "Permission Denied")
     else:
-        printnode(len(pathl) - 1, pathl[-1], False)
+        printnode(len(pathl) - 1, pathl[-1], False, color)
 
 
 for pos in dirlist:
     process(pos)
+
