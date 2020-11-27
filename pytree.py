@@ -10,7 +10,9 @@ COLORS = {pat: "=".join(col) for pat, *col in map(lambda s: s.split("="), COLORS
 
 
 if len(argv) >= 2:
-    if argv[1] == "--no-color" and len(argv) >= 3:
+    if argv[1] != "--no-color":
+        os.chdir(argv[1])
+    elif len(argv) >= 3:
         os.chdir(argv[2])
 
 color = True
